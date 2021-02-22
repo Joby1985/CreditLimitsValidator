@@ -3,7 +3,7 @@ package com.anz.credits;
 import com.anz.credits.dataprocessor.InputDataProcessor;
 import com.anz.credits.model.CreditEntity;
 import com.anz.credits.model.CreditEntitySet;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
