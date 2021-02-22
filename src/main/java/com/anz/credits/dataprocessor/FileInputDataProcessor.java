@@ -4,7 +4,11 @@ import com.anz.credits.CreditValidatorException;
 import com.anz.credits.model.CreditEntity;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +31,8 @@ public class FileInputDataProcessor extends InputDataProcessor {
     @Override
     public List<String[]> getRawData() throws CreditValidatorException {
 
-
         List<String[]> output = new ArrayList<>();
-        try (BufferedReader csvReader = new BufferedReader(new FileReader(pathToCsv))){
+        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(Files.newInputStream(Paths.get(pathToCsv)) ))){
             String row = null;
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
@@ -37,7 +40,8 @@ public class FileInputDataProcessor extends InputDataProcessor {
             }
         }
         catch(Exception e){
-            throw new CreditValidatorException("And exception occurred while reading data from the source");
+            e.printStackTrace();
+            throw new CreditValidatorException("An exception occurred while reading data from the source: "+e.getMessage());
         }
         return output;
     }

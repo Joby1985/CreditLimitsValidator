@@ -16,8 +16,6 @@ import java.util.*;
  * getNodeData() returns the read data as Nodes.
  */
 public abstract class InputDataProcessor{
-    // This structure is used as a temporary store
-    private CreditEntitySet<CreditEntity> allCreditEntities = new CreditEntitySet<>();
     private final String HEADER_ITEM_ENTITY="entity";
     private final String HEADER_ITEM_PARENT="parent";
     private final String HEADER_ITEM_LIMIT="limit";
@@ -28,6 +26,10 @@ public abstract class InputDataProcessor{
     private int INDEX_LIMIT = 2;
     private int INDEX_UTILIZ = 3;
 
+    // This structure is used as a temporary store
+    private CreditEntitySet<CreditEntity> tmpAllCreditEntities = new CreditEntitySet<>();
+
+    // The actual node details storage
     private List<CreditEntity> nodesDetails;
 
     /**
@@ -56,8 +58,9 @@ public abstract class InputDataProcessor{
         boolean isHeaderData = false;
         for (int i=0; i< rawData.size(); i++){
             String[] data = rawData.get(i);
-            if(data != null){
-                int totItems = data.length;
+            int totItems = 0;
+            // Ignore totally blank rows.. consider only totItems > 0
+            if(data != null && (totItems = data.length) > 0){
                 String row = Arrays.toString(data);
                 if (totItems < 4){ // We don't care if a line has more data than required.
                     throw new CreditValidatorException("Expected 4 tuples of data in the row: "+row+", but found only "+totItems);
@@ -75,7 +78,7 @@ public abstract class InputDataProcessor{
                     String parentNodeName = data[INDEX_PARENT];
                     CreditEntity parentCreditEntity = null;
                     if(parentNodeName != null && !"".equals(parentNodeName.trim())){
-                        parentCreditEntity = allCreditEntities.getByName(parentNodeName);
+                        parentCreditEntity = tmpAllCreditEntities.getByName(parentNodeName);
                     }
                     Double limit = getAmountSanitized(data[INDEX_LIMIT], row);
                     Double utilization = getAmountSanitized(data[INDEX_UTILIZ], row);
@@ -86,14 +89,13 @@ public abstract class InputDataProcessor{
                     else{ // In return structure, add only parent nodes.
                         returnData.add(creditEntity);
                     }
-                    allCreditEntities.add(creditEntity);
+                    tmpAllCreditEntities.add(creditEntity);
                 }
             }
-        }/*
-        Iterator<CreditEntity> allEntities = allCreditEntities.iterator();
-        while (allEntities.hasNext()){
-            System.out.println(allEntities.next());
-        }*/
+        }
+        //Finally clear the temp storage
+        tmpAllCreditEntities.clear();;
+        tmpAllCreditEntities = null;
         return returnData;
     }
 

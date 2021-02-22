@@ -4,6 +4,7 @@ import com.anz.credits.dataprocessor.FileInputDataProcessor;
 import com.anz.credits.dataprocessor.InputDataProcessor;
 import com.anz.credits.model.CreditEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,27 +20,40 @@ public class CreditLimitsValidator {
         //      If not, default path "src/main/resources/creditsEntityInfo.csv" would be taken.
         InputDataProcessor processor = new FileInputDataProcessor(args.length > 0 ?args[0] : null);
         try{
-            List<CreditEntity> creditEntities = processor.getNodeData();
-            for (CreditEntity creditEntity : creditEntities){
-                StringBuilder entityInfo = new StringBuilder();
-                entityInfo.append(creditEntity.getCreditEntityName());
-                StringBuilder breachDetails = new StringBuilder();
-                boolean valid = validateNode(creditEntity, entityInfo, breachDetails, true);
-
-                if(valid){
-                    System.out.println("Entities: "+entityInfo.toString()+":\n\tNo limit breaches");
-                }
-                else{
-                    System.out.println("Entities: "+entityInfo.toString()+":\n\tLimit breach at \n"+breachDetails.toString());
-                }
-            }
+            List<String> results  = validateAndReportCreditEntities(processor);
+            results.forEach(System.out::println);
         }
         catch(CreditValidatorException e){
             e.printStackTrace();;
         }
-
-
     }
+
+    /**
+     * Do the credit limits validation and return results in a List for reporting.
+     *
+     * @param processor
+     * @return
+     * @throws CreditValidatorException
+     */
+    public static List<String> validateAndReportCreditEntities(InputDataProcessor processor) throws CreditValidatorException{
+        List<CreditEntity> creditEntities = processor.getNodeData();
+        List<String> results = new ArrayList<>();
+        for (CreditEntity creditEntity : creditEntities){
+            StringBuilder entityInfo = new StringBuilder();
+            entityInfo.append(creditEntity.getCreditEntityName());
+            StringBuilder breachDetails = new StringBuilder();
+            boolean valid = validateNode(creditEntity, entityInfo, breachDetails, true);
+
+            if(valid){
+                results.add("Entities: "+entityInfo.toString()+":\n\tNo limit breaches");
+            }
+            else{
+                results.add("Entities: "+entityInfo.toString()+":\n\tLimit breach at \n"+breachDetails.toString());
+            }
+        }
+        return results;
+    }
+
 
     /**
      * Validate each node in each hierarchies.
