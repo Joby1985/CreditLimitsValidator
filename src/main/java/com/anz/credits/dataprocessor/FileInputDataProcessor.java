@@ -1,15 +1,15 @@
 package com.anz.credits.dataprocessor;
 
 import com.anz.credits.CreditValidatorException;
-import com.anz.credits.model.CreditEntity;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,6 +20,8 @@ import java.util.List;
  * @author: Joby Job
  */
 public class FileInputDataProcessor extends InputDataProcessor {
+    private Logger logger = LogManager.getLogger(FileInputDataProcessor.class);
+
     String pathToCsv = "src/main/resources/creditsEntityInfo.csv";
 
     public FileInputDataProcessor(String pathToCsv){
@@ -40,8 +42,11 @@ public class FileInputDataProcessor extends InputDataProcessor {
             }
         }
         catch(Exception e){
-            e.printStackTrace();
+            logger.error("And error occurred while reading data from File {}", e.getMessage(),e);
             throw new CreditValidatorException("An exception occurred while reading data from the source: "+e.getMessage());
+        }
+        if(logger.isDebugEnabled()) {
+            logger.debug("Got row data from file: "+ Arrays.deepToString(output.toArray()));
         }
         return output;
     }

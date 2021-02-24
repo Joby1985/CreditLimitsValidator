@@ -12,6 +12,9 @@ import java.util.Objects;
 public class CreditEntity {
 
     private CreditEntity parent;
+
+    //this field is used to do final reconciliation/fixing parent record if they appear later in data fetch order
+    private String parentName;
     private String creditEntityName;
     private Double limit=0.0, utilization=0.0;
 
@@ -19,8 +22,9 @@ public class CreditEntity {
 
     private List<CreditEntity> children;
 
-    public CreditEntity(String creditEntityName, CreditEntity parentCreditEntity, Double limit , Double utilization){
+    public CreditEntity(String creditEntityName, String parentName, CreditEntity parentCreditEntity, Double limit , Double utilization){
         this.creditEntityName = creditEntityName;
+        this.parentName = parentName;
         this.parent = parentCreditEntity;
         this.limit = limit;
         this.utilization = utilization;
@@ -72,6 +76,9 @@ public class CreditEntity {
         this.creditEntityName = creditEntityName;
     }
 
+    public String getParentName() {
+        return parentName;
+    }
     public Double getLimit() {
         return limit;
     }

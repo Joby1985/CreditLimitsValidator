@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <RollingRandomAccessFile name="LogToRollingRandomAccessFile" fileName="logs/creditLimits.log" filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+    <Loggers>
+        <Logger name="com.anz" level="debug" additivity="false">
+            <AppenderRef ref="LogToRollingRandomAccessFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>
