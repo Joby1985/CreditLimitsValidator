@@ -3,6 +3,8 @@ package com.anz.credits;
 import com.anz.credits.dataprocessor.FileInputDataProcessor;
 import com.anz.credits.dataprocessor.InputDataProcessor;
 import com.anz.credits.model.CreditEntity;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
  * @author: Joby Job
  */
 public class CreditLimitsValidator {
-
+    private static Logger logger = LogManager.getLogger(CreditLimitsValidator.class);
     public static void main(String[] args){
         // We currently use File Input Data
         // File path can be provided as a command line argument.
@@ -24,7 +26,8 @@ public class CreditLimitsValidator {
             results.forEach(System.out::println);
         }
         catch(CreditValidatorException e){
-            e.printStackTrace();;
+            logger.error("An error occurred while reading the file : {}",e.getMessage(),e);
+            System.out.println("An error occurred while reading the file :"+e.getMessage());
         }
     }
 

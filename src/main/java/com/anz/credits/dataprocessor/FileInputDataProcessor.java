@@ -42,7 +42,7 @@ public class FileInputDataProcessor extends InputDataProcessor {
             }
         }
         catch(Exception e){
-            logger.error("And error occurred while reading data from File {}", e.getMessage(),e);
+            logger.error("Error occurred while reading data from File {}", e.getMessage());
             throw new CreditValidatorException("An exception occurred while reading data from the source: "+e.getMessage());
         }
         if(logger.isDebugEnabled()) {
