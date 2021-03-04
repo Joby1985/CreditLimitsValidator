@@ -1,7 +1,0 @@
-parent,limit,utilization,entity
-,100,,A
-A,90,10,B
-B,40,70,C
-B,40,30,
-,200,150,E
-E,100,80,F
